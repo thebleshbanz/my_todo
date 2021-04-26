@@ -1,3 +1,4 @@
+
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
@@ -32,7 +33,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Hello World',
   props: {
     msg: String
   }
