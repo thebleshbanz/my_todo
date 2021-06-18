@@ -21,7 +21,7 @@
     {
       "text": "Dinner with family",
       "day": "26 may 2021 20:00 PM",
-      "reminder": true,
+      "reminder": false,
       "id": "6nQQugx"
     }
   ]
