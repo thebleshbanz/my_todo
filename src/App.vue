@@ -1,7 +1,16 @@
 <template>
   <div class="container">
-    <Header title="My ToDo Tasks" />
-    <Tasks @delete-task="deleteTask" :tasks="tasks" />
+    <Header 
+      @toggle-add-task="toggleAddTask"
+      title="My ToDo Tasks" 
+      :showAddTask = "showAddTask"
+    />
+    <AddTask v-show="showAddTask" @add-task="addTask" />
+    <Tasks 
+      @toggle-reminder="toggleReminder"
+      @delete-task="deleteTask" 
+      :tasks="tasks" 
+    />
   </div>
 </template>
 
@@ -9,47 +18,50 @@
   
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
+import AddTask from "./components/AddTask";
 
 export default {
   name: "App",
   components: {
     Header,
-    Tasks
+    Tasks,
+    AddTask,
   },
   data() {
     return {
-      tasks: []
+      tasks: [],
+      showAddTask : false,
     };
   },
   methods: {
+    toggleAddTask(){
+      this.showAddTask = !this.showAddTask
+    },
+    addTask(task){
+      this.tasks = [...this.tasks, task]
+    },
     deleteTask(id) {
       // console.log('task', id)
       if (confirm("Are you Sure?")) {
         this.tasks = this.tasks.filter(task => task.id !== id);
       }
-    }
+    },
+    toggleReminder(id){
+      this.tasks = this.tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task)
+    },
+    async fetchTasks() {
+      const res = await fetch('api/tasks');
+      const data = await res.json()
+      return data
+    },
+    async fetchTask(id) { 
+      const res = await fetch(`api/tasks/${id}`) 
+      const data = await res.json() 
+      return data 
+    },
   },
-  created() {
-    this.tasks = [
-      {
-        id: 1,
-        text: "Clinet Meeting On Zoom",
-        day: "May 24th at 1:30 PM",
-        reminder: true
-      },
-      {
-        id: 2,
-        text: "Lunch with CEO sir",
-        day: "May 23th at 12:30 PM",
-        reminder: true
-      },
-      {
-        id: 3,
-        text: "Watch Cricket Match of Ind vs Aust ",
-        day: "May 23th at 1:30 PM",
-        reminder: false
-      }
-    ];
+  async created() {
+    this.tasks = await this.fetchTasks();
   }
 };
 </script>
